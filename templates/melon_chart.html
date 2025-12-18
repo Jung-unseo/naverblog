@@ -1,51 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>멜론 실시간 차트</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #FF0050; text-align: center; margin-bottom: 30px;} /* 멜론을 상징하는 색상 */
-        .chart-container { max-width: 600px; margin: 20px auto; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .chart-header { display: flex; font-weight: bold; background-color: #fce4ec; padding: 10px; border-bottom: 1px solid #ddd; }
-        
-        /* 컬럼 너비 설정 */
-        .chart-header .rank, .chart-item .rank { width: 15%; text-align: center; }
-        .chart-header .title, .chart-item .title { width: 45%; }
-        .chart-header .artist, .chart-item .artist { width: 40%; }
-
-        .chart-item { display: flex; padding: 10px; border-bottom: 1px solid #eee; align-items: center;}
-        .chart-item:nth-child(even) { background-color: #fcfcfc; }
-        .chart-item:last-child { border-bottom: none; }
-        
-        .chart-item .rank { font-weight: bold; color: #FF0050; }
-        .chart-item .title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15px; }
-        .chart-item .artist { color: #777; font-size: 13px; }
-        .go-back { display: block; text-align: center; margin-top: 30px; text-decoration: none; color: #333; padding: 10px 15px; background-color: #eee; border-radius: 5px; max-width: 150px; margin-left: auto; margin-right: auto; }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Melon Chart</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;background:#0f1115;color:#eaeef5}
+    .wrap{max-width:860px;margin:0 auto;padding:28px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .logo{color:#eaeef5;text-decoration:none;font-weight:900}
+    .nav a{color:#aab3c5;text-decoration:none;border:1px solid #2a2f3a;padding:8px 10px;border-radius:12px}
+    h2{margin:14px 0}
+    .list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+    .row{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid #2a2f3a;border-radius:18px;background:#151822}
+    .rank{width:48px;height:48px;border-radius:14px;border:1px solid #2a2f3a;display:flex;align-items:center;justify-content:center;font-weight:900;color:#eaeef5}
+    .info{flex:1}
+    .t{margin:0;font-weight:900}
+    .a{margin:4px 0 0;color:#aab3c5}
+    .note{margin-top:14px;color:#94a3b8;font-size:14px}
+  </style>
 </head>
 <body>
-    <h1>🎶 멜론 실시간 차트</h1>
-    
-    {% if chart_data %}
-    <div class="chart-container">
-        <div class="chart-header">
-            <span class="rank">순위</span>
-            <span class="title">곡명</span>
-            <span class="artist">아티스트</span>
-        </div>
-        {% for song in chart_data %}
-        <div class="chart-item">
-            <span class="rank">{{ song.rank }}</span>
-            <span class="title">{{ song.title }}</span>
-            <span class="artist">{{ song.artist }}</span>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <p style="text-align: center; color: red;">⚠️ 차트 데이터를 가져오는 데 실패했습니다. (크롤링이 차단되었을 수 있습니다.)</p>
-    {% endif %}
+  <div class="wrap">
+    <header class="top">
+      <a class="logo" href="/">NAVERBLOG Clone</a>
+      <div class="nav"><a href="/">홈</a></div>
+    </header>
 
-    <a href="/" class="go-back">메인으로</a>
+    <h2>멜론 차트 (샘플)</h2>
+
+    <ul class="list">
+      {% for item in chart %}
+        <li class="row">
+          <div class="rank">{{ item.rank }}</div>
+          <div class="info">
+            <p class="t">{{ item.title }}</p>
+            <p class="a">{{ item.artist }}</p>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <p class="note">※ 현재는 샘플 데이터입니다. 원하면 멜론 차트 크롤링(또는 다른 차트 API)로 실제 데이터 붙이는 것도 해줄게.</p>
+  </div>
 </body>
 </html>

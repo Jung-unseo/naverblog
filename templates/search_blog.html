@@ -1,70 +1,84 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>네이버 맛집 블로그 검색</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .search-container { text-align: center; margin-bottom: 30px; }
-        .search-form { display: flex; justify-content: center; align-items: center; }
-        .search-input { 
-            width: 400px; 
-            padding: 10px 15px; 
-            border: 2px solid #1DB85C; /* 네이버 대표 색상 계열 */
-            border-radius: 20px 0 0 20px; 
-            font-size: 16px; 
-            outline: none;
-        }
-        .search-button {
-            padding: 10px 20px;
-            background-color: #1DB85C;
-            color: white;
-            border: 2px solid #1DB85C;
-            border-radius: 0 20px 20px 0;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .result-list { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            list-style: none; 
-            padding: 0; 
-        }
-        .result-item { 
-            border: 1px solid #eee; 
-            padding: 15px; 
-            margin-bottom: 10px; 
-            border-radius: 5px; 
-        }
-        .result-item h3 { margin-top: 0; font-size: 18px; color: #0000FF; /* 네이버 링크색상 */ }
-        .result-item p { font-size: 14px; color: #333; }
-        .result-item a { text-decoration: none; }
-        .result-item span { display: block; font-size: 12px; color: #777; margin-top: 5px; }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Blog Search</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;background:#0f1115;color:#eaeef5}
+    .wrap{max-width:960px;margin:0 auto;padding:28px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    a{color:inherit}
+    .logo{color:#eaeef5;text-decoration:none;font-weight:900}
+    .nav{display:flex;gap:10px}
+    .nav a{color:#aab3c5;text-decoration:none;border:1px solid #2a2f3a;padding:8px 10px;border-radius:12px}
+    .search{display:flex;gap:10px;margin:14px 0 10px}
+    .search input{flex:1;padding:14px;border-radius:14px;border:1px solid #2a2f3a;background:#151822;color:#eaeef5}
+    .search button{padding:14px 16px;border-radius:14px;border:0;background:#3b82f6;color:#fff;font-weight:800;cursor:pointer}
+    .meta{color:#aab3c5;margin:10px 0}
+    .list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+    .card{padding:16px;border:1px solid #2a2f3a;border-radius:18px;background:#151822}
+    .title{display:block;text-decoration:none;font-weight:900;color:#eaeef5;margin-bottom:8px}
+    .desc{color:#cbd5e1;line-height:1.55}
+    .sub{margin-top:10px;color:#94a3b8;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .pager{display:flex;justify-content:space-between;margin-top:16px}
+    .pager a{color:#aab3c5;text-decoration:none;border:1px solid #2a2f3a;padding:10px 12px;border-radius:12px}
+    .hint{color:#aab3c5;margin-top:14px}
+  </style>
 </head>
 <body>
-    <div class="search-container">
-        <h1>🍽️ 맛집 블로그 검색</h1>
-        <a href="/ranking" style="text-decoration: none; color: #1DB85C; font-weight: bold; display: block; margin-bottom: 10px;">
-    📊 인기 검색어 순위 보기
-        </a>
-        <form class="search-form" method="POST" action="/search_blog">
-            <input class="search-input" type="text" name="query" placeholder="검색어를 입력하세요 (예: 강남 맛집)">
-            <button class="search-button" type="submit">검색</button>
-        </form>
-    </div>
+  <div class="wrap">
+    <header class="top">
+      <a class="logo" href="/">NAVERBLOG Clone</a>
+      <div class="nav">
+        <a href="/ranking">검색어 랭킹</a>
+        <a href="/search/artist">아티스트 검색</a>
+      </div>
+    </header>
 
-    {% if search_results %}
-    <ul class="result-list">
-        {% for item in search_results %}
-        <li class="result-item">
-            <h3><a href="{{ item.link }}" target="_blank">{{ item.title | safe }}</a></h3>
-            <p>{{ item.description | safe }}</p>
-            <span>블로그명: {{ item.bloggername }} | 작성일: {{ item.postdate }}</span>
-        </li>
+    <form class="search" method="get" action="/search/blog">
+      <input type="text" name="q" value="{{ q }}" placeholder="블로그 검색어를 입력하세요" />
+      <button type="submit">검색</button>
+    </form>
+
+    {% if q %}
+      <div class="meta">총 <b>{{ total }}</b>건 · {{ page }} / {{ max_page }} 페이지</div>
+
+      <ul class="list">
+        {% for item in results %}
+          <li class="card">
+            <a class="title" href="{{ item.link }}" target="_blank" rel="noopener">
+              {{ item.title|safe }}
+            </a>
+            <div class="desc">{{ item.description|safe }}</div>
+            <div class="sub">
+              <span>{{ item.bloggername }}</span>
+              <span>·</span>
+              <a href="{{ item.bloggerlink }}" target="_blank" rel="noopener">블로그</a>
+              {% if item.postdate %}
+                <span>·</span>
+                <span>{{ item.postdate }}</span>
+              {% endif %}
+            </div>
+          </li>
         {% endfor %}
-    </ul>
+      </ul>
+
+      <div class="pager">
+        {% if page > 1 %}
+          <a href="/search/blog?q={{ q }}&page={{ page-1 }}">← 이전</a>
+        {% else %}
+          <span></span>
+        {% endif %}
+
+        {% if page < max_page %}
+          <a href="/search/blog?q={{ q }}&page={{ page+1 }}">다음 →</a>
+        {% endif %}
+      </div>
+    {% else %}
+      <p class="hint">검색어를 입력하면 블로그 결과 리스트가 표시됩니다.</p>
     {% endif %}
+  </div>
 </body>
 </html>

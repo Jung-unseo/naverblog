@@ -1,92 +1,71 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>가수 정보 검색</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
-        h1 { color: #1DB85C; margin-bottom: 30px; }
-        .search-container { margin-bottom: 40px; }
-        .search-input { 
-            padding: 10px; 
-            width: 300px; 
-            border: 2px solid #1DB85C; 
-            border-radius: 5px; 
-            font-size: 16px; 
-        }
-        .search-button {
-            padding: 10px 15px;
-            background-color: #1DB85C;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .result-table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-        .result-table th, .result-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        .result-table th {
-            background-color: #f2f2f2;
-            color: #333;
-        }
-        .go-back {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 15px;
-            background-color: #f0f0f0;
-            text-decoration: none;
-            color: #333;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Artist Search</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;background:#0f1115;color:#eaeef5}
+    .wrap{max-width:960px;margin:0 auto;padding:28px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .logo{color:#eaeef5;text-decoration:none;font-weight:900}
+    .nav{display:flex;gap:10px}
+    .nav a{color:#aab3c5;text-decoration:none;border:1px solid #2a2f3a;padding:8px 10px;border-radius:12px}
+    .search{display:flex;gap:10px;margin:14px 0 12px}
+    .search input{flex:1;padding:14px;border-radius:14px;border:1px solid #2a2f3a;background:#151822;color:#eaeef5}
+    .search button{padding:14px 16px;border-radius:14px;border:0;background:#22c55e;color:#00140a;font-weight:900;cursor:pointer}
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th{color:#aab3c5;text-align:left;font-weight:700;font-size:14px;padding:0 12px}
+    td{background:#151822;border:1px solid #2a2f3a;padding:14px 12px}
+    tr td:first-child{border-radius:14px 0 0 14px}
+    tr td:last-child{border-radius:0 14px 14px 0}
+    .hint{color:#aab3c5;margin-top:10px}
+  </style>
 </head>
 <body>
-    <h1>🎤 가수 정보 검색</h1>
+  <div class="wrap">
+    <header class="top">
+      <a class="logo" href="/">NAVERBLOG Clone</a>
+      <div class="nav">
+        <a href="/artist/ranking">아티스트 랭킹</a>
+        <a href="/search/blog">블로그 검색</a>
+      </div>
+    </header>
 
-    <div class="search-container">
-        <form method="GET" action="/search_artist">
-            <input class="search-input" type="text" name="artist_name" placeholder="가수 이름을 입력하세요 (예: 아이유)" value="{{ artist_query or '' }}">
-            <button class="search-button" type="submit">검색</button>
-        </form>
-    </div>
+    <form class="search" method="get" action="/search/artist">
+      <input type="text" name="q" value="{{ q }}" placeholder="아티스트 이름을 입력하세요 (예: IU)" />
+      <button type="submit">검색</button>
+    </form>
 
-    {% if artist_query %}
-        <h2>"{{ artist_query }}" (으)로 검색된 멜론 차트 기록</h2>
-        
-        {% if artist_info %}
-        <table class="result-table">
-            <thead>
-                <tr>
-                    <th>순위</th>
-                    <th>곡명</th>
-                    <th>가수</th>
-                    <th>기록 시점</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for song in artist_info %}
-                <tr>
-                    <td>{{ song.rank }}위</td>
-                    <td>{{ song.title }}</td>
-                    <td>{{ song.artist }}</td>
-                    <td>{{ song.recorded_at }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+    {% if q %}
+      {% if rows and rows|length > 0 %}
+        <table>
+          <thead>
+            <tr>
+              <th style="width:70px;">ID</th>
+              <th>이름</th>
+              <th>장르</th>
+              <th>소속</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rows %}
+              <tr>
+                <td>{{ r["id"] }}</td>
+                <td><b>{{ r["name"] }}</b></td>
+                <td>{{ r["genre"] or "-" }}</td>
+                <td>{{ r["agency"] or "-" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
         </table>
-        {% else %}
-        <p>검색된 가수 "{{ artist_query }}"의 차트 기록이 없습니다.</p>
-        {% endif %}
+      {% else %}
+        <p class="hint">검색 결과가 없습니다.</p>
+      {% endif %}
+    {% else %}
+      <p class="hint">아티스트 이름을 검색하면 로컬 DB(artists)에서 결과가 나옵니다.</p>
     {% endif %}
-
-    <a href="/" class="go-back">메인 페이지로 돌아가기</a>
+  </div>
 </body>
 </html>

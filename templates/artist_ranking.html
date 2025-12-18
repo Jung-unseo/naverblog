@@ -1,67 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>멜론 차트 가수별 랭킹</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
-        h1 { color: #FF0050; margin-bottom: 30px; }
-        
-        .ranking-table {
-            width: 60%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-        .ranking-table th, .ranking-table td {
-            border: 1px solid #eee;
-            padding: 12px;
-            text-align: center;
-        }
-        .ranking-table th {
-            background-color: #fce4ec;
-            color: #FF0050;
-        }
-        .ranking-table tr:nth-child(even) { background-color: #f9f9f9; }
-        .ranking-table td.rank { font-weight: bold; }
-        .ranking-table td.artist { text-align: left; }
-        
-        .go-back {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 10px 15px;
-            background-color: #f0f0f0;
-            text-decoration: none;
-            color: #333;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Artist Ranking</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;background:#0f1115;color:#eaeef5}
+    .wrap{max-width:720px;margin:0 auto;padding:28px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .logo{color:#eaeef5;text-decoration:none;font-weight:900}
+    .nav a{color:#aab3c5;text-decoration:none;border:1px solid #2a2f3a;padding:8px 10px;border-radius:12px}
+    h2{margin:14px 0}
+    ol{margin:0;padding-left:18px}
+    li{padding:12px 0;border-bottom:1px solid #2a2f3a;display:flex;justify-content:space-between;gap:10px}
+    .k{font-weight:900}
+    .c{color:#aab3c5}
+    .empty{color:#aab3c5}
+  </style>
 </head>
 <body>
-    <h1>👑 멜론 차트 가수별 노래 갯수 랭킹</h1>
+  <div class="wrap">
+    <header class="top">
+      <a class="logo" href="/">NAVERBLOG Clone</a>
+      <div class="nav"><a href="/search/artist">검색으로</a></div>
+    </header>
 
-    {% if artist_ranking %}
-    <table class="ranking-table">
-        <thead>
-            <tr>
-                <th>순위</th>
-                <th>가수명</th>
-                <th>차트 진입 곡 수</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in artist_ranking %}
-            <tr>
-                <td class="rank">{{ loop.index }}위</td>
-                <td class="artist">{{ item.artist }}</td>
-                <td>{{ item.song_count }}개</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h2>아티스트 검색어 랭킹</h2>
+
+    {% if top and top|length > 0 %}
+      <ol>
+        {% for row in top %}
+          <li>
+            <span class="k">{{ row["keyword"] }}</span>
+            <span class="c">{{ row["cnt"] }}</span>
+          </li>
+        {% endfor %}
+      </ol>
     {% else %}
-    <p>가수별 랭킹 데이터를 찾을 수 없습니다. 멜론 차트 데이터를 먼저 저장해 주세요.</p>
+      <p class="empty">아직 저장된 검색어가 없습니다. 아티스트 검색을 먼저 해주세요.</p>
     {% endif %}
-
-    <a href="/" class="go-back">메인 페이지로 돌아가기</a>
+  </div>
 </body>
 </html>
